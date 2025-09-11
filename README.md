@@ -5,7 +5,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>CS:GO Browser Edition</title>
+    <title>CS:GO Mobile Edition</title>
     <style>
         * {
             margin: 0;
@@ -14,6 +14,8 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             touch-action: manipulation;
             -webkit-tap-highlight-color: transparent;
+            -webkit-user-select: none;
+            user-select: none;
         }
         
         body {
@@ -21,6 +23,7 @@
             color: white;
             overflow: hidden;
             height: 100vh;
+            width: 100vw;
         }
         
         #game-container {
@@ -47,11 +50,12 @@
         }
         
         .title {
-            font-size: 48px;
+            font-size: 42px;
             margin-bottom: 30px;
             text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
             color: #ffa500;
             text-align: center;
+            padding: 0 10px;
         }
         
         .subtitle {
@@ -59,34 +63,32 @@
             margin-bottom: 20px;
             color: #ffa500;
             text-align: center;
+            padding: 0 10px;
         }
         
         .btn {
-            padding: 15px 30px;
-            margin: 10px;
-            font-size: 18px;
+            padding: 16px 32px;
+            margin: 12px;
+            font-size: 20px;
             background: linear-gradient(to bottom, #ff7b00, #ff5500);
             border: none;
-            border-radius: 5px;
+            border-radius: 10px;
             color: white;
             cursor: pointer;
             transition: all 0.3s;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-        }
-        
-        .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
+            min-width: 200px;
+            text-align: center;
         }
         
         .btn:active {
-            transform: translateY(0);
+            transform: scale(0.95);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
         }
         
         #game-area {
             width: 100%;
-            max-width: 900px;
-            height: 55vh;
+            height: 50vh;
             background-color: #2c3e50;
             border: 4px solid #ecf0f1;
             border-radius: 8px;
@@ -155,7 +157,6 @@
         
         #hud {
             width: 100%;
-            max-width: 900px;
             display: flex;
             justify-content: space-between;
             padding: 10px;
@@ -167,63 +168,8 @@
         
         .hud-section {
             margin: 5px;
-            min-width: 120px;
-        }
-        
-        #weapon-selector {
-            display: flex;
-            margin-top: 10px;
-            background-color: rgba(0, 0, 0, 0.7);
-            padding: 10px;
-            border-radius: 5px;
-            flex-wrap: wrap;
-            justify-content: center;
-            max-width: 900px;
-            width: 100%;
-        }
-        
-        .weapon-btn {
-            padding: 8px 15px;
-            margin: 5px;
-            background-color: #34495e;
-            border: none;
-            border-radius: 3px;
-            color: white;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-        
-        .weapon-btn.selected {
-            background-color: #e67e22;
-            transform: scale(1.05);
-        }
-        
-        #instructions-content {
-            background-color: rgba(0, 0, 0, 0.7);
-            padding: 20px;
-            border-radius: 10px;
-            max-width: 600px;
-            text-align: left;
-            overflow-y: auto;
-            max-height: 70vh;
-        }
-        
-        #instructions-content p {
-            margin: 10px 0;
-            line-height: 1.6;
-        }
-        
-        .key {
-            display: inline-block;
-            padding: 2px 6px;
-            background-color: #34495e;
-            border-radius: 4px;
-            font-weight: bold;
-            margin: 0 3px;
-        }
-        
-        .back-btn {
-            margin-top: 20px;
+            min-width: 100px;
+            text-align: center;
         }
         
         .health-bar {
@@ -232,6 +178,7 @@
             background-color: #2c3e50;
             border-radius: 5px;
             overflow: hidden;
+            margin: 5px auto;
         }
         
         .health-fill {
@@ -249,16 +196,17 @@
             display: flex;
             flex-wrap: wrap;
             justify-content: center;
-            max-width: 900px;
             margin-top: 20px;
             overflow-y: auto;
             max-height: 60vh;
+            width: 100%;
+            padding: 0 10px;
         }
         
         .shop-item {
-            width: 200px;
+            width: 45%;
             padding: 15px;
-            margin: 10px;
+            margin: 8px;
             background: linear-gradient(135deg, #34495e, #2c3e50);
             border-radius: 8px;
             text-align: center;
@@ -266,18 +214,19 @@
             transition: all 0.3s;
         }
         
-        .shop-item:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        .shop-item:active {
+            transform: scale(0.95);
         }
         
         .shop-item h3 {
             color: #ffa500;
             margin-bottom: 10px;
+            font-size: 16px;
         }
         
         .shop-item p {
             margin: 5px 0;
+            font-size: 14px;
         }
         
         .price {
@@ -298,7 +247,7 @@
             z-index: 200;
         }
         
-        #game-over {
+        #game-over, #victory {
             position: absolute;
             top: 50%;
             left: 50%;
@@ -310,67 +259,56 @@
             display: none;
             z-index: 1000;
             width: 90%;
-            max-width: 500px;
-        }
-        
-        #victory {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background-color: rgba(0, 0, 0, 0.9);
-            padding: 30px;
-            border-radius: 10px;
-            text-align: center;
-            display: none;
-            z-index: 1000;
-            width: 90%;
-            max-width: 500px;
+            max-width: 400px;
         }
         
         /* Мобильное управление */
         #mobile-controls {
             position: absolute;
-            bottom: 120px;
+            bottom: 100px;
             left: 0;
             width: 100%;
-            display: none;
+            display: flex;
             justify-content: space-between;
-            padding: 0 20px;
+            padding: 0 15px;
             z-index: 300;
+            pointer-events: none;
         }
         
         #left-control {
-            width: 120px;
-            height: 120px;
-            background-color: rgba(255, 255, 255, 0.2);
+            width: 130px;
+            height: 130px;
+            background-color: rgba(255, 255, 255, 0.15);
             border-radius: 50%;
             position: relative;
             touch-action: none;
+            pointer-events: auto;
         }
         
         #joystick {
-            width: 50px;
-            height: 50px;
+            width: 55px;
+            height: 55px;
             background-color: rgba(255, 255, 255, 0.5);
             border-radius: 50%;
             position: absolute;
-            top: 35px;
-            left: 35px;
+            top: 37.5px;
+            left: 37.5px;
+            transition: transform 0.1s;
         }
         
         #right-control {
-            width: 120px;
-            height: 120px;
+            width: 130px;
+            height: 130px;
             display: flex;
             flex-wrap: wrap;
             justify-content: center;
             align-items: center;
+            pointer-events: auto;
         }
         
         .action-btn {
-            width: 50px;
-            height: 50px;
+            width: 55px;
+            height: 55px;
             background-color: rgba(255, 165, 0, 0.7);
             border-radius: 50%;
             display: flex;
@@ -379,112 +317,109 @@
             margin: 5px;
             font-size: 20px;
             font-weight: bold;
-            user-select: none;
+            color: white;
+            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.3);
+            transition: all 0.1s;
+            pointer-events: auto;
+        }
+        
+        .action-btn:active {
+            transform: scale(0.9);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
         }
         
         #shoot-btn {
-            width: 60px;
-            height: 60px;
+            width: 65px;
+            height: 65px;
             background-color: rgba(255, 0, 0, 0.7);
+            font-size: 22px;
         }
         
         #mobile-weapon-selector {
             position: absolute;
-            bottom: 70px;
+            bottom: 60px;
             left: 0;
             width: 100%;
-            display: none;
+            display: flex;
             justify-content: center;
             padding: 0 10px;
             z-index: 300;
+            pointer-events: auto;
+            flex-wrap: wrap;
         }
         
         .mobile-weapon-btn {
-            padding: 5px 10px;
-            margin: 2px;
+            padding: 8px 12px;
+            margin: 4px;
             background-color: #34495e;
             border: none;
-            border-radius: 3px;
+            border-radius: 5px;
             color: white;
             font-size: 12px;
+            min-width: 60px;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+        
+        .mobile-weapon-btn.selected {
+            background-color: #e67e22;
+            transform: scale(1.05);
         }
         
         /* Адаптивность */
-        @media (max-width: 768px) {
-            .title {
-                font-size: 36px;
+        @media (max-height: 700px) {
+            #game-area {
+                height: 45vh;
             }
             
-            .subtitle {
-                font-size: 24px;
+            #mobile-controls {
+                bottom: 90px;
             }
             
-            .btn {
-                padding: 12px 24px;
+            #left-control, #right-control {
+                width: 110px;
+                height: 110px;
+            }
+            
+            #joystick {
+                width: 45px;
+                height: 45px;
+                top: 32.5px;
+                left: 32.5px;
+            }
+            
+            .action-btn {
+                width: 45px;
+                height: 45px;
                 font-size: 16px;
             }
             
+            #shoot-btn {
+                width: 55px;
+                height: 55px;
+                font-size: 18px;
+            }
+        }
+        
+        @media (max-height: 600px) {
             #game-area {
                 height: 40vh;
             }
             
-            #hud {
-                flex-direction: column;
-                align-items: center;
-                padding: 5px;
-            }
-            
-            .hud-section {
-                margin: 2px;
-                min-width: auto;
-                width: 100%;
-                text-align: center;
-            }
-            
-            #weapon-selector {
-                display: none;
-            }
-            
             #mobile-controls {
-                display: flex;
+                bottom: 80px;
             }
             
-            #mobile-weapon-selector {
-                display: flex;
-            }
-            
-            #instructions-content {
-                max-height: 60vh;
-                padding: 15px;
-                font-size: 14px;
-            }
-            
-            #shop-items {
-                max-height: 50vh;
-            }
-            
-            .shop-item {
-                width: 150px;
-                padding: 10px;
-                margin: 5px;
-            }
-            
-            .shop-item h3 {
-                font-size: 16px;
-            }
-            
-            .shop-item p {
-                font-size: 14px;
+            .btn {
+                padding: 12px 24px;
+                font-size: 18px;
+                min-width: 160px;
             }
         }
         
-        @media (max-width: 480px) {
-            .title {
-                font-size: 28px;
-            }
-            
-            #game-area {
-                height: 35vh;
+        @media (max-width: 350px) {
+            .shop-item {
+                width: 100%;
             }
             
             #left-control, #right-control {
@@ -511,20 +446,26 @@
             }
             
             .mobile-weapon-btn {
-                padding: 3px 6px;
-                font-size: 10px;
+                padding: 6px 8px;
+                font-size: 11px;
+                min-width: 50px;
             }
         }
         
-        /* Для очень маленьких экранов */
-        @media (max-height: 600px) {
-            #game-area {
-                height: 30vh;
-            }
-            
-            #mobile-controls {
-                bottom: 100px;
-            }
+        /* Анимации */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        
+        .pulse {
+            animation: pulse 1s infinite;
         }
     </style>
 </head>
@@ -532,10 +473,10 @@
     <div id="game-container">
         <!-- Главное меню -->
         <div id="menu-screen">
-            <h1 class="title">CS:GO Browser Edition</h1>
+            <h1 class="title">CS:GO Mobile Edition</h1>
             <button class="btn" onclick="startGame()">Начать игру</button>
             <button class="btn" onclick="showInstructions()">Инструкция</button>
-            <p style="margin-top: 20px; text-align: center; padding: 0 10px;">Убивайте врагов, зарабатывайте очки, покупайте лучшее оружие!</p>
+            <p style="margin-top: 20px; text-align: center; padding: 0 20px;">Убивайте врагов, зарабатывайте очки, покупайте лучшее оружие!</p>
         </div>
         
         <!-- Экран игры -->
@@ -562,23 +503,11 @@
                 </div>
                 <div class="hud-section">Оружие: <span id="current-weapon">Pistol</span></div>
                 <div class="hud-section">Патроны: <span id="ammo">12</span>/36</div>
-                <div class="hud-section">Гранаты: <span id="grenades">2</span></div>
                 <div class="hud-section" id="score">Счет: 0</div>
                 <div class="hud-section" id="money">Деньги: $1000</div>
                 <div class="hud-section">
-                    <button class="btn" onclick="openShop()" style="padding: 5px 10px; font-size: 14px;">Магазин (M)</button>
+                    <button class="btn" onclick="openShop()" style="padding: 8px 12px; font-size: 14px;">Магазин</button>
                 </div>
-            </div>
-            
-            <div id="weapon-selector">
-                <button class="weapon-btn selected" data-weapon="knife">Нож</button>
-                <button class="weapon-btn" data-weapon="pistol">Pistol</button>
-                <button class="weapon-btn" data-weapon="shotgun">Shotgun</button>
-                <button class="weapon-btn" data-weapon="ak47">AK-47</button>
-                <button class="weapon-btn" data-weapon="awp">AWP</button>
-                <button class="weapon-btn" data-weapon="m4a4">M4A4</button>
-                <button class="weapon-btn" onclick="throwGrenade()">Бросить гранату (G)</button>
-                <button class="weapon-btn" onclick="plantBomb()">Установить бомбу (B)</button>
             </div>
             
             <!-- Мобильное управление -->
@@ -587,20 +516,19 @@
                     <div id="joystick"></div>
                 </div>
                 <div id="right-control">
-                    <div class="action-btn" id="shoot-btn" ontouchstart="mobileShoot()">F</div>
+                    <div class="action-btn" id="shoot-btn" ontouchstart="mobileShootStart()" ontouchend="mobileShootEnd()">F</div>
                     <div class="action-btn" ontouchstart="mobileThrowGrenade()">G</div>
                     <div class="action-btn" ontouchstart="mobileReload()">R</div>
-                    <div class="action-btn" ontouchstart="openShop()">M</div>
                 </div>
             </div>
             
             <div id="mobile-weapon-selector">
-                <button class="mobile-weapon-btn selected" data-weapon="knife">Нож</button>
-                <button class="mobile-weapon-btn" data-weapon="pistol">Pistol</button>
+                <button class="mobile-weapon-btn selected" data-weapon="pistol">Pistol</button>
                 <button class="mobile-weapon-btn" data-weapon="shotgun">Shotgun</button>
                 <button class="mobile-weapon-btn" data-weapon="ak47">AK-47</button>
                 <button class="mobile-weapon-btn" data-weapon="awp">AWP</button>
                 <button class="mobile-weapon-btn" data-weapon="m4a4">M4A4</button>
+                <button class="mobile-weapon-btn" ontouchstart="openShop()">Магазин</button>
             </div>
             
             <div id="game-over">
@@ -661,17 +589,10 @@
                 </div>
                 
                 <div class="shop-item" data-item="grenade" data-price="300">
-                    <h3>Обычная граната</h3>
+                    <h3>Граната</h3>
                     <p>Урон: 50-100</p>
                     <p>Радиус: 100px</p>
                     <p class="price">$300</p>
-                </div>
-                
-                <div class="shop-item" data-item="strong_grenade" data-price="600">
-                    <h3>Сильная граната</h3>
-                    <p>Урон: 100-150</p>
-                    <p>Радиус: 150px</p>
-                    <p class="price">$600</p>
                 </div>
                 
                 <div class="shop-item" data-item="health" data-price="500">
@@ -688,37 +609,18 @@
         <div id="instructions-screen">
             <h2 class="subtitle">Инструкция по игре</h2>
             <div id="instructions-content">
-                <p>Добро пожаловать в CS:GO Browser Edition!</p>
-                <p><strong>Управление на ПК:</strong></p>
-                <p>Движение: <span class="key">W</span> <span class="key">A</span> <span class="key">S</span> <span class="key">D</span></p>
-                <p>Стрельба: <span class="key">ЛКМ</span> или <span class="key">Пробел</span></p>
-                <p>Прицеливание: <span class="key">ПКМ</span></p>
-                <p>Прыжок: <span class="key">Пробел</span></p>
-                <p>Смена оружия: <span class="key">1</span>-<span class="key">6</span></p>
-                <p>Бросить гранату: <span class="key">G</span></p>
-                <p>Установить бомбу: <span class="key">B</span></p>
-                <p>Перезарядка: <span class="key">R</span></p>
-                <p>Магазин: <span class="key">M</span></p>
-                
-                <p><strong>Управление на мобильном:</strong></p>
+                <p>Добро пожаловать в CS:GO Mobile Edition!</p>
+                <p><strong>Управление:</strong></p>
                 <p>Движение: виртуальный джойстик в левой части экрана</p>
                 <p>Стрельба: кнопка F в правой части экрана</p>
                 <p>Бросить гранату: кнопка G</p>
                 <p>Перезарядка: кнопка R</p>
-                <p>Магазин: кнопка M</p>
+                <p>Магазин: кнопка внизу экрана</p>
                 <p>Смена оружия: панель с кнопками оружия внизу экрана</p>
                 
                 <p><strong>Цель игры:</strong></p>
                 <p>Уничтожьте всех врагов в каждом раунде!</p>
                 <p>Зарабатывайте деньги за убийства и покупайте лучшее оружие.</p>
-                
-                <p><strong>Особенности:</strong></p>
-                <p>- Разные виды оружия с уникальными характеристиками</p>
-                <p>- Система покупки оружия между раундами</p>
-                <p>- Реалистичная физика гранат</p>
-                <p>- Враги с ИИ, которые атакуют игрока</p>
-                <p>- Укрытия для тактического gameplay</p>
-                <p>- Увеличивающаяся сложность с каждым раундом</p>
             </div>
             <button class="btn back-btn" onclick="showMenu()">Назад в меню</button>
         </div>
@@ -736,7 +638,6 @@
         const healthDisplay = document.getElementById('health');
         const healthBarFill = document.getElementById('health-bar-fill');
         const ammoDisplay = document.getElementById('ammo');
-        const grenadesDisplay = document.getElementById('grenades');
         const scoreDisplay = document.getElementById('score');
         const moneyDisplay = document.getElementById('money');
         const currentWeaponDisplay = document.getElementById('current-weapon');
@@ -757,7 +658,6 @@
         let playerAmmo = 12;
         let playerTotalAmmo = 36;
         let playerGrenades = 2;
-        let playerStrongGrenades = 0;
         let playerMoney = 1000;
         let score = 0;
         let currentWeapon = 'pistol';
@@ -766,18 +666,17 @@
         let bullets = [];
         let grenades = [];
         let bombs = [];
-        let keys = {};
         let gameInterval;
         let botSpawnInterval;
         let isGameOver = false;
-        let isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
         let joystickActive = false;
         let joystickX = 0;
         let joystickY = 0;
+        let isShooting = false;
+        let shootInterval;
         
         // Оружие и их характеристики
         const weapons = {
-            knife: { name: 'Нож', damage: 50, range: 30, ammo: 0, price: 0 },
             pistol: { name: 'Pistol', damage: 20, range: 300, ammo: 12, price: 300 },
             shotgun: { name: 'Shotgun', damage: 40, range: 150, ammo: 8, price: 600 },
             ak47: { name: 'AK-47', damage: 25, range: 400, ammo: 30, price: 1200 },
@@ -789,12 +688,6 @@
         function startGame() {
             menuScreen.style.display = 'none';
             gameScreen.style.display = 'flex';
-            
-            // Показываем мобильное управление, если это мобильное устройство
-            if (isMobile) {
-                document.getElementById('mobile-controls').style.display = 'flex';
-                document.getElementById('mobile-weapon-selector').style.display = 'flex';
-            }
             
             // Сброс состояния игрока
             playerHealth = 100;
@@ -894,22 +787,8 @@
         
         // Движение игрока
         function movePlayer() {
-            // Управление с клавиатуры
-            if (keys['ArrowLeft'] || keys['KeyA']) {
-                playerX = Math.max(0, playerX - playerSpeed);
-            }
-            if (keys['ArrowRight'] || keys['KeyD']) {
-                playerX = Math.min(gameArea.offsetWidth - 30, playerX + playerSpeed);
-            }
-            if (keys['ArrowUp'] || keys['KeyW']) {
-                playerY = Math.max(0, playerY - playerSpeed);
-            }
-            if (keys['ArrowDown'] || keys['KeyS']) {
-                playerY = Math.min(gameArea.offsetHeight - 30, playerY + playerSpeed);
-            }
-            
             // Управление с джойстика на мобильных устройствах
-            if (isMobile && joystickActive) {
+            if (joystickActive) {
                 playerX = Math.max(0, Math.min(gameArea.offsetWidth - 30, playerX + joystickX * playerSpeed));
                 playerY = Math.max(0, Math.min(gameArea.offsetHeight - 30, playerY + joystickY * playerSpeed));
             }
@@ -982,7 +861,7 @@
                 
                 if (grenade.y > gameArea.offsetHeight - 15) {
                     // Взрыв гранаты
-                    explodeGrenade(grenade.x, grenade.y, grenade.isStrong);
+                    explodeGrenade(grenade.x, grenade.y);
                     gameArea.removeChild(grenade.element);
                     grenades.splice(i, 1);
                 } else {
@@ -993,9 +872,9 @@
         }
         
         // Взрыв гранаты
-        function explodeGrenade(x, y, isStrong = false) {
-            const radius = isStrong ? 150 : 100;
-            const damage = isStrong ? 100 : 50;
+        function explodeGrenade(x, y) {
+            const radius = 100;
+            const damage = 50;
             
             // Находим всех ботов в радиусе взрыва
             for (let i = 0; i < bots.length; i++) {
@@ -1044,7 +923,7 @@
             explosion.style.top = (y - radius/2) + 'px';
             explosion.style.width = radius + 'px';
             explosion.style.height = radius + 'px';
-            explosion.style.backgroundColor = isStrong ? 'rgba(255, 50, 0, 0.5)' : 'rgba(255, 165, 0, 0.5)';
+            explosion.style.backgroundColor = 'rgba(255, 165, 0, 0.5)';
             explosion.style.borderRadius = '50%';
             explosion.style.zIndex = '95';
             gameArea.appendChild(explosion);
@@ -1157,25 +1036,16 @@
         }
         
         // Бросок гранаты
-        function throwGrenade(isStrong = false) {
-            if ((isStrong && playerStrongGrenades <= 0) || (!isStrong && playerGrenades <= 0)) return;
+        function throwGrenade() {
+            if (playerGrenades <= 0) return;
             
-            if (isStrong) {
-                playerStrongGrenades--;
-            } else {
-                playerGrenades--;
-            }
-            
+            playerGrenades--;
             updateHUD();
             
             const grenade = document.createElement('div');
             grenade.className = 'grenade';
             grenade.style.left = playerX + 'px';
             grenade.style.top = playerY + 'px';
-            
-            if (isStrong) {
-                grenade.style.backgroundColor = '#ff4500';
-            }
             
             gameArea.appendChild(grenade);
             
@@ -1184,81 +1054,8 @@
                 x: playerX,
                 y: playerY,
                 speedX: (Math.random() - 0.5) * 5,
-                speedY: -10,
-                isStrong: isStrong
+                speedY: -10
             });
-        }
-        
-        // Установка бомбы
-        function plantBomb() {
-            const bomb = document.createElement('div');
-            bomb.className = 'bomb';
-            bomb.style.left = playerX + 'px';
-            bomb.style.top = playerY + 'px';
-            
-            gameArea.appendChild(bomb);
-            
-            bombs.push({
-                element: bomb,
-                x: playerX,
-                y: playerY,
-                timer: 10 // 10 секунд до взрыва
-            });
-            
-            // Таймер бомбы
-            const bombInterval = setInterval(() => {
-                if (bombs.length === 0) {
-                    clearInterval(bombInterval);
-                    return;
-                }
-                
-                const currentBomb = bombs[bombs.length - 1];
-                currentBomb.timer--;
-                
-                if (currentBomb.timer <= 0) {
-                    clearInterval(bombInterval);
-                    explodeBomb(currentBomb);
-                }
-            }, 1000);
-        }
-        
-        // Взрыв бомбы
-        function explodeBomb(bomb) {
-            // Находим всех ботов в радиусе взрыва
-            for (let i = 0; i < bots.length; i++) {
-                const bot = bots[i];
-                const dx = bot.x - bomb.x;
-                const dy = bot.y - bomb.y;
-                const distance = Math.sqrt(dx * dx + dy * dy);
-                
-                if (distance < 150) {
-                    gameArea.removeChild(bot.element);
-                    bots.splice(i, 1);
-                    i--;
-                    score += 200;
-                    playerMoney += 300;
-                    updateHUD();
-                }
-            }
-            
-            // Визуальный эффект взрыва
-            const explosion = document.createElement('div');
-            explosion.style.position = 'absolute';
-            explosion.style.left = (bomb.x - 75) + 'px';
-            explosion.style.top = (bomb.y - 75) + 'px';
-            explosion.style.width = '150px';
-            explosion.style.height = '150px';
-            explosion.style.backgroundColor = 'rgba(255, 0, 0, 0.5)';
-            explosion.style.borderRadius = '50%';
-            explosion.style.zIndex = '95';
-            gameArea.appendChild(explosion);
-            
-            gameArea.removeChild(bomb.element);
-            bombs = [];
-            
-            setTimeout(() => {
-                gameArea.removeChild(explosion);
-            }, 1000);
         }
         
         // Смена оружия
@@ -1270,9 +1067,6 @@
             updateHUD();
             
             // Обновляем выделение кнопок оружия
-            document.querySelectorAll('.weapon-btn').forEach(btn => {
-                btn.classList.remove('selected');
-            });
             document.querySelectorAll('.mobile-weapon-btn').forEach(btn => {
                 btn.classList.remove('selected');
             });
@@ -1299,9 +1093,6 @@
                 case 'grenade':
                     playerGrenades += 1;
                     break;
-                case 'strong_grenade':
-                    playerStrongGrenades += 1;
-                    break;
                 case 'health':
                     playerHealth = Math.min(100, playerHealth + 50);
                     break;
@@ -1309,7 +1100,7 @@
             
             updateHUD();
             shopMoneyDisplay.textContent = playerMoney;
-            alert(`Вы купили ${item === 'strong_grenade' ? 'сильную гранату' : weapons[item] ? weapons[item].name : 'аптечку'}`);
+            alert(`Вы купили ${weapons[item] ? weapons[item].name : 'аптечку'}`);
         }
         
         // Обновление HUD
@@ -1317,7 +1108,6 @@
             healthDisplay.textContent = playerHealth;
             healthBarFill.style.width = playerHealth + '%';
             ammoDisplay.textContent = `${playerAmmo}/${playerTotalAmmo}`;
-            grenadesDisplay.textContent = `${playerGrenades} / ${playerStrongGrenades}`;
             scoreDisplay.textContent = `Счет: ${score}`;
             moneyDisplay.textContent = `Деньги: $${playerMoney}`;
             
@@ -1335,6 +1125,7 @@
             isGameOver = true;
             clearInterval(gameInterval);
             clearInterval(botSpawnInterval);
+            clearInterval(shootInterval);
             
             finalScoreDisplay.textContent = score;
             gameOverScreen.style.display = 'block';
@@ -1345,6 +1136,7 @@
             isGameOver = true;
             clearInterval(gameInterval);
             clearInterval(botSpawnInterval);
+            clearInterval(shootInterval);
             
             victoryScoreDisplay.textContent = score;
             victoryScreen.style.display = 'block';
@@ -1413,6 +1205,7 @@
             // Очистка игры
             clearInterval(gameInterval);
             clearInterval(botSpawnInterval);
+            clearInterval(shootInterval);
             
             bots.forEach(bot => {
                 if (bot.element.parentNode) {
@@ -1445,10 +1238,23 @@
         }
         
         // Мобильная стрельба
-        function mobileShoot() {
+        function mobileShootStart() {
             if (gameScreen.style.display === 'flex' && !isGameOver) {
+                isShooting = true;
                 shoot(playerX + 15, playerY);
+                
+                // Автоматическая стрельба
+                shootInterval = setInterval(() => {
+                    if (isShooting && !isGameOver) {
+                        shoot(playerX + 15, playerY);
+                    }
+                }, 200);
             }
+        }
+        
+        function mobileShootEnd() {
+            isShooting = false;
+            clearInterval(shootInterval);
         }
         
         // Мобильный бросок гранаты
@@ -1470,52 +1276,6 @@
             }
         }
         
-        // Обработка нажатий клавиш
-        document.addEventListener('keydown', (e) => {
-            keys[e.code] = true;
-            
-            // Стрельба на пробел
-            if (e.code === 'Space' && gameScreen.style.display === 'flex' && !isGameOver) {
-                shoot(playerX + 15, playerY);
-            }
-            
-            // Смена оружия цифрами
-            if (e.code === 'Digit1') changeWeapon('knife');
-            if (e.code === 'Digit2') changeWeapon('pistol');
-            if (e.code === 'Digit3') changeWeapon('shotgun');
-            if (e.code === 'Digit4') changeWeapon('ak47');
-            if (e.code === 'Digit5') changeWeapon('awp');
-            if (e.code === 'Digit6') changeWeapon('m4a4');
-            
-            // Бросок гранаты на G
-            if (e.code === 'KeyG' && !isGameOver) throwGrenade();
-            
-            // Сильная граната на H
-            if (e.code === 'KeyH' && !isGameOver) throwGrenade(true);
-            
-            // Установка бомбы на B
-            if (e.code === 'KeyB' && !isGameOver) plantBomb();
-            
-            // Перезарядка на R
-            if (e.code === 'KeyR' && playerTotalAmmo > 0 && !isGameOver) {
-                const neededAmmo = weapons[currentWeapon].ammo - playerAmmo;
-                const ammoToReload = Math.min(neededAmmo, playerTotalAmmo);
-                
-                playerAmmo += ammoToReload;
-                playerTotalAmmo -= ammoToReload;
-                updateHUD();
-            }
-            
-            // Магазин на M
-            if (e.code === 'KeyM' && gameScreen.style.display === 'flex' && !isGameOver) {
-                openShop();
-            }
-        });
-        
-        document.addEventListener('keyup', (e) => {
-            keys[e.code] = false;
-        });
-        
         // Обработка кликов по кнопкам оружия
         document.querySelectorAll('[data-weapon]').forEach(btn => {
             btn.addEventListener('click', () => {
@@ -1530,100 +1290,87 @@
             });
         });
         
-        // Стрельба по клику мыши
-        gameArea.addEventListener('click', () => {
-            if (gameScreen.style.display === 'flex' && !isGameOver) {
-                shoot(playerX + 15, playerY);
+        // Мобильное управление - джойстик
+        let touchId = null;
+        
+        leftControl.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            const touch = e.touches[0];
+            touchId = touch.identifier;
+            joystickActive = true;
+            
+            const rect = leftControl.getBoundingClientRect();
+            const centerX = rect.left + rect.width / 2;
+            const centerY = rect.top + rect.height / 2;
+            
+            joystickX = (touch.clientX - centerX) / (rect.width / 2);
+            joystickY = (touch.clientY - centerY) / (rect.height / 2);
+            
+            // Ограничиваем значения джойстика
+            const length = Math.sqrt(joystickX * joystickX + joystickY * joystickY);
+            if (length > 1) {
+                joystickX /= length;
+                joystickY /= length;
             }
+            
+            // Перемещаем визуальный джойстик
+            joystick.style.transform = `translate(${joystickX * 35}px, ${joystickY * 35}px)`;
         });
         
-        // Мобильное управление - джойстик
-        if (isMobile) {
-            let touchId = null;
+        leftControl.addEventListener('touchmove', (e) => {
+            e.preventDefault();
+            if (!touchId) return;
             
-            leftControl.addEventListener('touchstart', (e) => {
-                e.preventDefault();
-                const touch = e.touches[0];
-                touchId = touch.identifier;
-                joystickActive = true;
-                
-                const rect = leftControl.getBoundingClientRect();
-                const centerX = rect.left + rect.width / 2;
-                const centerY = rect.top + rect.height / 2;
-                
-                joystickX = (touch.clientX - centerX) / (rect.width / 2);
-                joystickY = (touch.clientY - centerY) / (rect.height / 2);
-                
-                // Ограничиваем значения джойстика
-                const length = Math.sqrt(joystickX * joystickX + joystickY * joystickY);
-                if (length > 1) {
-                    joystickX /= length;
-                    joystickY /= length;
+            // Находим наш touch по identifier
+            let touch = null;
+            for (let i = 0; i < e.touches.length; i++) {
+                if (e.touches[i].identifier === touchId) {
+                    touch = e.touches[i];
+                    break;
                 }
-                
-                // Перемещаем визуальный джойстик
-                joystick.style.left = (35 + joystickX * 35) + 'px';
-                joystick.style.top = (35 + joystickY * 35) + 'px';
-            });
+            }
             
-            leftControl.addEventListener('touchmove', (e) => {
-                e.preventDefault();
-                if (!touchId) return;
-                
-                // Находим наш touch по identifier
-                let touch = null;
-                for (let i = 0; i < e.touches.length; i++) {
-                    if (e.touches[i].identifier === touchId) {
-                        touch = e.touches[i];
-                        break;
-                    }
-                }
-                
-                if (!touch) return;
-                
-                const rect = leftControl.getBoundingClientRect();
-                const centerX = rect.left + rect.width / 2;
-                const centerY = rect.top + rect.height / 2;
-                
-                joystickX = (touch.clientX - centerX) / (rect.width / 2);
-                joystickY = (touch.clientY - centerY) / (rect.height / 2);
-                
-                // Ограничиваем значения джойстика
-                const length = Math.sqrt(joystickX * joystickX + joystickY * joystickY);
-                if (length > 1) {
-                    joystickX /= length;
-                    joystickY /= length;
-                }
-                
-                // Перемещаем визуальный джойстик
-                joystick.style.left = (35 + joystickX * 35) + 'px';
-                joystick.style.top = (35 + joystickY * 35) + 'px';
-            });
+            if (!touch) return;
             
-            leftControl.addEventListener('touchend', (e) => {
-                e.preventDefault();
-                touchId = null;
-                joystickActive = false;
-                joystickX = 0;
-                joystickY = 0;
-                
-                // Возвращаем джойстик в центр
-                joystick.style.left = '35px';
-                joystick.style.top = '35px';
-            });
+            const rect = leftControl.getBoundingClientRect();
+            const centerX = rect.left + rect.width / 2;
+            const centerY = rect.top + rect.height / 2;
             
-            leftControl.addEventListener('touchcancel', (e) => {
-                e.preventDefault();
-                touchId = null;
-                joystickActive = false;
-                joystickX = 0;
-                joystickY = 0;
-                
-                // Возвращаем джойстик в центр
-                joystick.style.left = '35px';
-                joystick.style.top = '35px';
-            });
-        }
+            joystickX = (touch.clientX - centerX) / (rect.width / 2);
+            joystickY = (touch.clientY - centerY) / (rect.height / 2);
+            
+            // Ограничиваем значения джойстика
+            const length = Math.sqrt(joystickX * joystickX + joystickY * joystickY);
+            if (length > 1) {
+                joystickX /= length;
+                joystickY /= length;
+            }
+            
+            // Перемещаем визуальный джойстик
+            joystick.style.transform = `translate(${joystickX * 35}px, ${joystickY * 35}px)`;
+        });
+        
+        leftControl.addEventListener('touchend', (e) => {
+            e.preventDefault();
+            touchId = null;
+            joystickActive = false;
+            joystickX = 0;
+            joystickY = 0;
+            
+            // Возвращаем джойстик в центр
+            joystick.style.transform = 'translate(0, 0)';
+        });
+        
+        leftControl.addEventListener('touchcancel', (e) => {
+            e.preventDefault();
+            touchId = null;
+            joystickActive = false;
+            joystickX = 0;
+            joystickY = 0;
+            
+            // Возвращаем джойстик в центр
+            joystick.style.transform = 'translate(0, 0)';
+        });
     </script>
 </body>
 </html>
